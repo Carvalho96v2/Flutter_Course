@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './product_admin.dart';
-import './products.dart';
-
 
 class SideDrawer extends StatelessWidget {
 
@@ -19,23 +16,13 @@ class SideDrawer extends StatelessWidget {
             ListTile(
               title: Text('Manage Products'),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ProductAdminPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/admin');
               },
             ),
             ListTile(
               title: Text('Products Page'),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ProductsPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/products');
               },
             ),
           ],

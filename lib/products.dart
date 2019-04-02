@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 class Products extends StatelessWidget {
-  final List<Map<String, String>> products;
-  final Function deleteProduct;
+  final List<Map<String, dynamic>> products;
 
-  Products(this.products, this.deleteProduct);
+  Products(this.products);
 
   Widget _buildProductList() {
     Widget productCards;
@@ -26,22 +24,53 @@ class Products extends StatelessWidget {
     return Card(
         child: Column(
       children: <Widget>[
+        Container(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  products[index]['title'],
+                  style: TextStyle(
+                      fontSize: 26.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Oswald'),
+                ),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
+                  decoration: BoxDecoration(
+                      color: Colors.green.shade700,
+                      borderRadius: BorderRadius.circular(5.0)),
+                  child: Text(
+                    '\$${products[index]['price'].toString()}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            )),
+        SizedBox(
+          height: 10.0,
+        ),
         Image.asset(products[index]['image']),
-        Text(products[index]['title']),
+        Container (
+          margin: EdgeInsets.only(top:5.0),
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1.0), borderRadius: BorderRadius.circular(7.0)),
+          padding: EdgeInsets.all(3.0),
+          child: Text('Union Square, San Fancisco'),
+        ),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(
-              child: Text('Details'),
+              child: Text('Details', style: TextStyle(color: Colors.white),),
               color: Theme.of(context).accentColor,
               onPressed: () => Navigator.pushNamed<bool>(
                     context,
                     '/product/' + index.toString(),
-                  ).then((bool value) {
-                      if(value) {
-                        deleteProduct(index);
-                      }
-                  }),
+                  ),
             )
           ],
         )

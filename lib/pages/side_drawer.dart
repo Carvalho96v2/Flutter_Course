@@ -14,12 +14,14 @@ class SideDrawer extends StatelessWidget {
               title: Text('Choose'),
             ),
             ListTile(
+              leading: Icon(Icons.edit),
               title: Text('Manage Products'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/admin');
               },
             ),
             ListTile(
+              leading: Icon(Icons.shopping_basket),
               title: Text('Products Page'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/products');

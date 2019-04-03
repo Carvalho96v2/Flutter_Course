@@ -6,6 +6,7 @@ import './pages/products.dart';
 import './pages/product.dart';
 
 void main() {
+  //debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
@@ -38,9 +39,9 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.deepOrange, accentColor: Colors.deepPurple),
       home: AuthPage(),
       routes: {
-        '/products': (BuildContext context) =>
-            ProductsPage(_products),
-        '/admin': (BuildContext context) => ProductAdminPage(_addProduct, _deleteProduct)
+        '/products': (BuildContext context) => ProductsPage(_products),
+        '/admin': (BuildContext context) =>
+            ProductAdminPage(_addProduct, _deleteProduct)
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split('/');
@@ -50,15 +51,14 @@ class _MyAppState extends State<MyApp> {
         if (pathElements[1] == 'product') {
           final int index = int.parse(pathElements[2]);
           return MaterialPageRoute<bool>(
-              builder: (BuildContext context) => ProductPage(
-                  _products[index]['title'], _products[index]['image']));
+            builder: (BuildContext context) => ProductPage(_products[index]),
+          );
         }
         return null;
       },
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ProductsPage(_products));
+            builder: (BuildContext context) => ProductsPage(_products));
       },
     );
   }

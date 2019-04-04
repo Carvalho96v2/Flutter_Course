@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import '../widgets/ui_elements/title_default.dart';
+import '../widgets/products/price.dart';
+
 class ProductPage extends StatelessWidget {
   final Map<String, dynamic> product;
 
@@ -22,12 +25,14 @@ class ProductPage extends StatelessWidget {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(10.0),
-                child: Text(product['title']),
+                child: TitleDefault(product['title']),
               ),
               Image.asset(product['image']),
               Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text(product['description'])),
+                padding: EdgeInsets.all(10.0),
+                child: Text(product['description']),
+              ),
+              PriceTag(product['price'].toString())
             ],
           ),
         ),

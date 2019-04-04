@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import './price.dart';
+import '../ui_elements/title_default.dart';
+import '../products/address.dart';
+
 
 class Products extends StatefulWidget {
   final List<Map<String, dynamic>> products;
@@ -45,40 +49,18 @@ class _ProductsState extends State<Products> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  widget.products[index]['title'],
-                  style: TextStyle(
-                      fontSize: 26.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Oswald'),
-                ),
+                TitleDefault(widget.products[index]['title']),
                 SizedBox(
                   width: 8.0,
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
-                  decoration: BoxDecoration(
-                      color: Colors.green.shade700,
-                      borderRadius: BorderRadius.circular(5.0)),
-                  child: Text(
-                    '\$${widget.products[index]['price'].toString()}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                PriceTag( widget.products[index]['price'].toString()),
               ],
             )),
         SizedBox(
           height: 10.0,
         ),
         Image.asset(widget.products[index]['image']),
-        Container(
-          margin: EdgeInsets.only(top: 5.0),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1.0),
-              borderRadius: BorderRadius.circular(7.0)),
-          padding: EdgeInsets.all(3.0),
-          child: Text('Union Square, San Fancisco'),
-        ),
+        AddressTag('Union Square, San Fancisco'),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[

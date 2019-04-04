@@ -10,6 +10,25 @@ class ProductAdminPage extends StatelessWidget {
 
   ProductAdminPage(this.addProduct, this.deleteProduct);
 
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.blue,
+      title: Text('Manage Products'),
+      bottom: TabBar(
+        tabs: <Widget>[
+          Tab(
+            icon: Icon(Icons.create),
+            text: 'Create Product',
+          ),
+          Tab(
+            icon: Icon(Icons.list),
+            text: 'Manage Product',
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -21,22 +40,7 @@ class ProductAdminPage extends StatelessWidget {
         length: 2,
         child: Scaffold(
           drawer: SideDrawer(),
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: Text('Manage Products'),
-            bottom: TabBar(
-              tabs: <Widget>[
-                Tab(
-                  icon: Icon(Icons.create),
-                  text: 'Create Product',
-                ),
-                Tab(
-                  icon: Icon(Icons.list),
-                  text: 'Manage Product',
-                )
-              ],
-            ),
-          ),
+          appBar: _buildAppBar(),
           body: TabBarView(
             children: <Widget>[
               ProductCreatePage(addProduct),

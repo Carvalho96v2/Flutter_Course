@@ -8,9 +8,13 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  String email = '';
-  String password = '';
-  bool _acceptTerms = true;
+
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  Map<String, dynamic> _formData = {
+    "email": null,
+    "password": null,
+    "accept": false
+  };
 
   Decoration _buildBackgroundImage() {
     return BoxDecoration(
@@ -24,30 +28,36 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildEmailTextField() {
-    return TextField(
+    return TextFormField(
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'Email Address',
         filled: true,
         fillColor: Colors.white,
       ),
-      onChanged: (String _email) {
-        setState(() {
-          email = _email;
-        });
+      validator: (String value) {
+        if (value.isEmpty ){
+          return 'Please enter a valid email address.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['email'] = value;
       },
     );
   }
 
   Widget _buildPasswordTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
           labelText: 'Password', fillColor: Colors.white, filled: true),
       obscureText: true,
-      onChanged: (String _password) {
-        setState(() {
-          password = _password;
-        });
+      validator: (String value) {
+        if(value.isEmpty || value.length < 8) {
+          return 'Password needs to be at least 8 characters long.';
+        }
+      },
+      onSaved: (String value) {
+          _formData['password'] = value;
       },
     );
   }
@@ -61,10 +71,10 @@ class _AuthPageState extends State<AuthPage> {
           'Accept Terms',
           style: TextStyle(color: Colors.black),
         ),
-        value: _acceptTerms,
+        value: _formData['accept'],
         onChanged: (bool value) {
           setState(() {
-            _acceptTerms = value;
+            _formData['accept'] = value;
           });
         },
       ),
@@ -77,6 +87,10 @@ class _AuthPageState extends State<AuthPage> {
       textColor: Colors.white,
       child: Text('LOGIN'),
       onPressed: () {
+        if (!_formkey.currentState.validate()){
+          return;
+        }
+        _formkey.currentState.save();        
         Navigator.pushReplacementNamed(context, '/products');
       },
     );
@@ -84,7 +98,9 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double targetWidth = MediaQuery.of(context).size.width > 768.0? 500.0 : MediaQuery.of(context).size.width * 0.95;
+    final double targetWidth = MediaQuery.of(context).size.width > 768.0
+        ? 500.0
+        : MediaQuery.of(context).size.width * 0.95;
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -95,19 +111,24 @@ class _AuthPageState extends State<AuthPage> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              width:  targetWidth,
-              child: Column(children: <Widget>[
-                _buildEmailTextField(),
-                SizedBox(
-                  height: 5.0,
+              width: targetWidth,
+              child: Form(
+                key: _formkey,
+                child: Column(
+                  children: <Widget>[
+                    _buildEmailTextField(),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    _buildPasswordTextField(),
+                    _buildAcceptTermsSwitch(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildLoginButton(),
+                  ],
                 ),
-                _buildPasswordTextField(),
-                _buildAcceptTermsSwitch(),
-                SizedBox(
-                  height: 10.0,
-                ),
-                _buildLoginButton(),
-              ]),
+              ),
             ),
           ),
         ),

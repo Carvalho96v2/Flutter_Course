@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../scoped_models/main.dart';
 import '../widgets/ui_elements/title_default.dart';
 import '../widgets/products/price.dart';
-import '../models/product.dart';
 
 class ProductPage extends StatelessWidget {
-  final Product product;
+  final int index;
 
-  ProductPage(this.product);
+  ProductPage(this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -17,26 +18,30 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(product.title),
-        ),
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TitleDefault(product.title),
+      child: ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(model.products[index].title),
+            ),
+            body: Center(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    child: TitleDefault(model.products[index].title),
+                  ),
+                  Image.asset(model.products[index].image),
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(model.products[index].description),
+                  ),
+                  PriceTag(model.products[index].price.toString())
+                ],
               ),
-              Image.asset(product.image),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(product.description),
-              ),
-              PriceTag(product.price.toString())
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

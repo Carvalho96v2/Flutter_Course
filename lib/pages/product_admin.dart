@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import './side_drawer.dart';
 import './product_edit.dart';
 import './product_list.dart';
-import '../models/product.dart';
 
 
 class ProductAdminPage extends StatelessWidget {
-  final Function addProduct, deleteProduct, updateProduct;
-  final List<Product> products;
-
-  ProductAdminPage(this.addProduct, this.updateProduct, this.deleteProduct, this.products);
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -45,8 +40,8 @@ class ProductAdminPage extends StatelessWidget {
           appBar: _buildAppBar(),
           body: TabBarView(
             children: <Widget>[
-              ProductEditPage(addProduct: addProduct),
-              ProductListPage(products, updateProduct, deleteProduct)
+              ProductEditPage(),
+              ProductListPage(null,null,null)
             ],
           ),
         ),

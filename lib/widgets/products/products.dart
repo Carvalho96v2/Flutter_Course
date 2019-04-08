@@ -1,96 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
 import './price.dart';
 import '../ui_elements/title_default.dart';
 import '../products/address.dart';
 import '../../models/product.dart';
-
+import '../../scoped_models/main.dart';
 
 class Products extends StatefulWidget {
-  final List<Product> products;
-
-  Products(this.products);
-
   @override
   State<StatefulWidget> createState() {
     return _ProductsState();
   }
-
 }
 
 class _ProductsState extends State<Products> {
-
-  IconData _favourite_icon;  
-
-  Widget _buildProductList() {
+  IconData _favourite_icon;
+  Widget _buildProductList(List<Product> products) {
     Widget productCards;
-    if (widget.products.length > 0) {
+    if (products.length > 0) {
       productCards = ListView.builder(
         itemBuilder: _buildProductItem,
-        itemCount: widget.products.length,
+        itemCount: products.length,
       );
     } else {
       productCards = Center(
-        child: Text('No products found, please add some'),
+        child: Text('No products found, please add some.'),
       );
     }
     return productCards;
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    if(widget.products[index].is_favourite == null){
-      widget.products[index].is_favourite = false;
-    }
-    _favourite_icon = widget.products[index].is_favourite? Icons.favorite : Icons.favorite_border; 
-    
-    return Card(
-        child: Column(
-      children: <Widget>[
-        Container(
-            padding: EdgeInsets.only(top: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TitleDefault(widget.products[index].title),
-                SizedBox(
-                  width: 8.0,
-                ),
-                PriceTag( widget.products[index].price.toString()),
-              ],
-            )),
-        SizedBox(
-          height: 10.0,
-        ),
-        Image.asset(widget.products[index].image),
-        AddressTag('Union Square, San Fancisco'),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        _favourite_icon = model.displayedProducts[index].is_favourite
+            ? Icons.favorite
+            : Icons.favorite_border;
+
+        return Card(
+            child: Column(
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-              onPressed: () => Navigator.pushNamed<bool>(
-                    context,
-                    '/product/' + index.toString(),
-                  ),
+            Container(
+                padding: EdgeInsets.only(top: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TitleDefault(model.displayedProducts[index].title),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    PriceTag(model.displayedProducts[index].price.toString()),
+                  ],
+                )),
+            SizedBox(
+              height: 10.0,
             ),
-            IconButton(
-              icon: Icon(_favourite_icon),
-              color: Colors.red,
-              onPressed: () {
-                setState(() {
-                  widget.products[index].is_favourite = !widget.products[index].is_favourite;
-                  _favourite_icon = widget.products[index].is_favourite? Icons.favorite : Icons.favorite_border; 
-                });
-              },
+            Image.asset(model.displayedProducts[index].image),
+            AddressTag('Union Square, San Fancisco'),
+            Text(model.displayedProducts[index].userEmail),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.info),
+                  color: Theme.of(context).accentColor,
+                  onPressed: () => Navigator.pushNamed<bool>(
+                        context,
+                        '/product/' + index.toString(),
+                      ),
+                ),
+                IconButton(
+                  icon: Icon(_favourite_icon),
+                  color: Colors.red,
+                  onPressed: () {
+                    model.selectProduct(index);
+                    model.toggleFavourite();
+                    _favourite_icon = model.displayedProducts[index].is_favourite
+                        ? Icons.favorite
+                        : Icons.favorite_border;
+                  },
+                )
+              ],
             )
           ],
-        )
-      ],
-    ));
+        ));
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return _buildProductList();
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return _buildProductList(model.displayedProducts);
+      },
+    );
   }
 }

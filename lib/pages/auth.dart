@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped_models/main.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -8,7 +11,6 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   Map<String, dynamic> _formData = {
     "email": null,
@@ -36,7 +38,7 @@ class _AuthPageState extends State<AuthPage> {
         fillColor: Colors.white,
       ),
       validator: (String value) {
-        if (value.isEmpty ){
+        if (value.isEmpty) {
           return 'Please enter a valid email address.';
         }
       },
@@ -52,12 +54,12 @@ class _AuthPageState extends State<AuthPage> {
           labelText: 'Password', fillColor: Colors.white, filled: true),
       obscureText: true,
       validator: (String value) {
-        if(value.isEmpty || value.length < 8) {
+        if (value.isEmpty || value.length < 8) {
           return 'Password needs to be at least 8 characters long.';
         }
       },
       onSaved: (String value) {
-          _formData['password'] = value;
+        _formData['password'] = value;
       },
     );
   }
@@ -82,18 +84,25 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildLoginButton() {
-    return RaisedButton(
-      color: Theme.of(context).primaryColor,
-      textColor: Colors.white,
-      child: Text('LOGIN'),
-      onPressed: () {
-        if (!_formkey.currentState.validate()){
-          return;
-        }
-        _formkey.currentState.save();        
-        Navigator.pushReplacementNamed(context, '/products');
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return RaisedButton(
+          color: Theme.of(context).primaryColor,
+          textColor: Colors.white,
+          child: Text('LOGIN'),
+          onPressed: () => _submitForm(model.login),
+        );
       },
     );
+  }
+
+  void _submitForm(Function login) {
+    if (!_formkey.currentState.validate()) {
+      return;
+    }
+    _formkey.currentState.save();
+    login(_formData['email'], _formData['password']);
+    Navigator.pushReplacementNamed(context, '/products');
   }
 
   @override

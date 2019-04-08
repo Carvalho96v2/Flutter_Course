@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import './price.dart';
 import '../ui_elements/title_default.dart';
 import '../products/address.dart';
+import '../../models/product.dart';
 
 
 class Products extends StatefulWidget {
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
 
   Products(this.products);
 
@@ -36,10 +37,10 @@ class _ProductsState extends State<Products> {
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    if(widget.products[index]['is_favourite'] == null){
-      widget.products[index]['is_favourite'] = false;
+    if(widget.products[index].is_favourite == null){
+      widget.products[index].is_favourite = false;
     }
-    _favourite_icon = widget.products[index]['is_favourite']? Icons.favorite : Icons.favorite_border; 
+    _favourite_icon = widget.products[index].is_favourite? Icons.favorite : Icons.favorite_border; 
     
     return Card(
         child: Column(
@@ -49,17 +50,17 @@ class _ProductsState extends State<Products> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TitleDefault(widget.products[index]['title']),
+                TitleDefault(widget.products[index].title),
                 SizedBox(
                   width: 8.0,
                 ),
-                PriceTag( widget.products[index]['price'].toString()),
+                PriceTag( widget.products[index].price.toString()),
               ],
             )),
         SizedBox(
           height: 10.0,
         ),
-        Image.asset(widget.products[index]['image']),
+        Image.asset(widget.products[index].image),
         AddressTag('Union Square, San Fancisco'),
         ButtonBar(
           alignment: MainAxisAlignment.center,
@@ -77,8 +78,8 @@ class _ProductsState extends State<Products> {
               color: Colors.red,
               onPressed: () {
                 setState(() {
-                  widget.products[index]['is_favourite'] = !widget.products[index]['is_favourite'];
-                  _favourite_icon = widget.products[index]['is_favourite']? Icons.favorite : Icons.favorite_border; 
+                  widget.products[index].is_favourite = !widget.products[index].is_favourite;
+                  _favourite_icon = widget.products[index].is_favourite? Icons.favorite : Icons.favorite_border; 
                 });
               },
             )

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import './side_drawer.dart';
 import '../widgets/products/products.dart';
+import '../models/product.dart';
 
 class ProductsPage extends StatefulWidget {
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
 
   ProductsPage(this.products);
 
@@ -17,7 +18,7 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   bool _sort = false;
-  List<Map<String, dynamic>> _products ;
+  List<Product> _products ;
   IconData filter_icon = Icons.sort;
 
   @override
@@ -37,7 +38,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 if(_sort){
                   filter_icon = Icons.short_text;
                   for (var product in widget.products) {
-                    if (product['is_favourite']) {
+                    if (product.is_favourite) {
                       _products.add(product);
                     }
                   }

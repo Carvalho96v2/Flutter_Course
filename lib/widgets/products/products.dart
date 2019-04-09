@@ -56,7 +56,12 @@ class _ProductsState extends State<Products> {
             SizedBox(
               height: 10.0,
             ),
-            Image.asset(model.displayedProducts[index].image),
+            FadeInImage(
+              placeholder: AssetImage('assets/food.jpg'),
+              height: 300.0,
+              fit: BoxFit.cover,
+              image: NetworkImage(model.displayedProducts[index].image),
+            ),
             AddressTag('Union Square, San Fancisco'),
             Text(model.displayedProducts[index].userEmail),
             ButtonBar(
@@ -67,18 +72,19 @@ class _ProductsState extends State<Products> {
                   color: Theme.of(context).accentColor,
                   onPressed: () => Navigator.pushNamed<bool>(
                         context,
-                        '/product/' + index.toString(),
+                        '/product/' + model.displayedProducts[index].id,
                       ),
                 ),
                 IconButton(
                   icon: Icon(_favourite_icon),
                   color: Colors.red,
                   onPressed: () {
-                    model.selectProduct(index);
+                    model.selectProduct(model.allProducts[index].id);
                     model.toggleFavourite();
-                    _favourite_icon = model.displayedProducts[index].is_favourite
-                        ? Icons.favorite
-                        : Icons.favorite_border;
+                    _favourite_icon =
+                        model.displayedProducts[index].is_favourite
+                            ? Icons.favorite
+                            : Icons.favorite_border;
                   },
                 )
               ],

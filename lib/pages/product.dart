@@ -7,10 +7,6 @@ import '../widgets/ui_elements/title_default.dart';
 import '../widgets/products/price.dart';
 
 class ProductPage extends StatelessWidget {
-  final int index;
-
-  ProductPage(this.index);
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -22,21 +18,26 @@ class ProductPage extends StatelessWidget {
         builder: (BuildContext context, Widget child, MainModel model) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(model.products[index].title),
+              title: Text(model.selectedProduct.title),
             ),
             body: Center(
               child: Column(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    child: TitleDefault(model.products[index].title),
+                    child: TitleDefault(model.selectedProduct.title),
                   ),
-                  Image.asset(model.products[index].image),
+                  FadeInImage(
+                    image: NetworkImage(model.selectedProduct.image),
+                    placeholder: AssetImage('assets/food.jpg'),
+                    height: 300.0,
+                    fit: BoxFit.cover,
+                  ),
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    child: Text(model.products[index].description),
+                    child: Text(model.selectedProduct.description),
                   ),
-                  PriceTag(model.products[index].price.toString())
+                  PriceTag(model.selectedProduct.price.toString())
                 ],
               ),
             ),

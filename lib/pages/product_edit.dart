@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'package:flutter_course/models/location_data.dart';
 import '../models/product.dart';
 import '../scoped_models/main.dart';
+import '../widgets/form_inputs/location.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'description': null,
     'price': null,
     'image': 'assets/food.jpg',
+    'location': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -87,6 +90,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
+  void _setLocation(LocationData locData) {
+    _formData['location'] = locData;
+  }
+
   _submitForm(Function addProduct, Function updateProduct, Product product,
       String productId) {
     if (!_formKey.currentState.validate()) {
@@ -101,6 +108,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
             _formData['description'],
             _formData['image'],
             _formData['price'],
+            _formData['location']
           ).then((bool success) {
             if (success) {
               Navigator.pushReplacementNamed(context, '/products');
@@ -145,6 +153,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
               _buildTitleTextField(product),
               _buildDescriptionTextField(product),
               _buildPriceTextField(product),
+              SizedBox(
+                height: 10.0,
+              ),
+              LocationInput(_setLocation, product),
               SizedBox(
                 height: 10.0,
               ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/location_data.dart';
 import '../models/product.dart';
 import './connected_products.dart';
 
@@ -11,6 +12,10 @@ mixin ProductsModel on ConnectedProducts {
 
   void selectProduct(String productId) {
     selProductId = productId;
+    if (productId == null) {
+      return;
+    }
+    notifyListeners();
   }
 
   List<Product> get allProducts {
@@ -114,6 +119,10 @@ mixin ProductsModel on ConnectedProducts {
             image: productData['image'],
             userEmail: productData['userEmail'],
             userId: productData['userId'],
+            location: LocationData(
+                address: productData['address'],
+                longitude: productData['longitude'],
+                latitude: productData['latitude']),
             is_favourite: productData['wishlistUsers'] == null
                 ? false
                 : (productData['wishlistUsers'] as Map<String, dynamic>)

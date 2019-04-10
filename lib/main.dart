@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:map_view/map_view.dart';
 
 import './pages/auth.dart';
 import './pages/product_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
 import './scoped_models/main.dart';
-import './models/user.dart';
 
 void main() {
-  //debugPaintSizeEnabled = true;
+
+  MapView.setApiKey('AIzaSyA0qgFSB8eBUY2YU8klBfxLNt7JmoHXFb0');
   runApp(MyApp());
 }
 

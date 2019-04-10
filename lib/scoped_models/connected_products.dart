@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/location_data.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 
@@ -13,7 +14,7 @@ mixin ConnectedProducts on Model {
   bool isLoading = false;
 
   Future<bool> addProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, double price, LocationData location) {
         isLoading = true;
       notifyListeners();
     final Map<String, dynamic> productData = {
@@ -22,6 +23,9 @@ mixin ConnectedProducts on Model {
       'image':
           'https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/07/07/14/melting-choc-istock.jpg?w968h681',
       'price': price,
+      'latitude': location.latitude,
+      'longitude': location.longitude,
+      'address': location.address,
       'userEmail': authenticatedUser.email,
       'userId': authenticatedUser.id
     };
@@ -41,6 +45,7 @@ mixin ConnectedProducts on Model {
           description: description,
           image: image,
           price: price,
+          location: location,
           userEmail: authenticatedUser.email,
           userId: authenticatedUser.id);
       print(newProduct.id);

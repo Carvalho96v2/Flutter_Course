@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './side_drawer.dart';
+import '../widgets/misc/side_drawer.dart';
 import './product_edit.dart';
 import './product_list.dart';
 import '../scoped_models/main.dart';

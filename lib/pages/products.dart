@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main.dart';
-import './side_drawer.dart';
+import '../widgets/misc/side_drawer.dart';
 import '../widgets/products/products.dart';
 
 class ProductsPage extends StatefulWidget {

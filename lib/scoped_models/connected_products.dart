@@ -26,7 +26,7 @@ mixin ConnectedProducts on Model {
       'userId': authenticatedUser.id
     };
     return http
-        .post('https://eaglevision-1554304063719.firebaseio.com/products.json',
+        .post('https://eaglevision-1554304063719.firebaseio.com/products.json?auth=${authenticatedUser.token}',
             body: json.encode(productData))
         .then((http.Response response) {
           if(response.statusCode != 200 && response.statusCode != 201){

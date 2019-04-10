@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../ui_elements/logout_list_tile.dart';
 
 class SideDrawer extends StatelessWidget {
 
@@ -27,6 +28,8 @@ class SideDrawer extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, '/products');
               },
             ),
+            Divider(),
+            LogoutListTile(),
           ],
         ),
       );

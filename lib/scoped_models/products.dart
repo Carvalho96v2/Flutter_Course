@@ -49,12 +49,12 @@ mixin ProductsModel on ConnectedProducts {
     notifyListeners();
     http
         .delete(
-            'https://eaglevision-1554304063719.firebaseio.com/products/${productId}.json')
+            'https://eaglevision-1554304063719.firebaseio.com/products/${productId}.json?auth=${authenticatedUser.token}')
         .then((http.Response response) {
-          selProductId = null;
-          isLoading = false;
-          notifyListeners();
-        });
+      selProductId = null;
+      isLoading = false;
+      notifyListeners();
+    });
   }
 
   Future<Null> updateProduct(
@@ -75,7 +75,7 @@ mixin ProductsModel on ConnectedProducts {
     });
     return http
         .put(
-            'https://eaglevision-1554304063719.firebaseio.com/products/${selectedProduct.id}.json',
+            'https://eaglevision-1554304063719.firebaseio.com/products/${selectedProduct.id}.json?auth=${authenticatedUser.token}',
             body: json.encode(updateData))
         .then((http.Response response) {
       products[selectedProductIndex] = Product(
@@ -92,10 +92,11 @@ mixin ProductsModel on ConnectedProducts {
     });
   }
 
-  Future<Null> fetchProducts() {
+  Future<Null> fetchProducts({bool onlyForUser = false}) {
     isLoading = true;
     return http
-        .get('https://eaglevision-1554304063719.firebaseio.com/products.json')
+        .get(
+            'https://eaglevision-1554304063719.firebaseio.com/products.json?auth=${authenticatedUser.token}')
         .then((http.Response response) {
       final Map<String, dynamic> productListData = json.decode(response.body);
       final List<Product> fetchedProductList = [];
@@ -112,17 +113,25 @@ mixin ProductsModel on ConnectedProducts {
             price: productData['price'],
             image: productData['image'],
             userEmail: productData['userEmail'],
-            userId: productData['userId']);
+            userId: productData['userId'],
+            is_favourite: productData['wishlistUsers'] == null
+                ? false
+                : (productData['wishlistUsers'] as Map<String, dynamic>)
+                    .containsKey(authenticatedUser.id));
         fetchedProductList.add(product);
       });
       selProductId = null;
-      products = fetchedProductList;
+      List<Product> filteredProducts =
+          fetchedProductList.where((Product product) {
+        return product.userId == authenticatedUser.id;
+      }).toList();
+      products = onlyForUser ? filteredProducts : fetchedProductList;
       isLoading = false;
       notifyListeners();
     });
   }
 
-  void toggleFavourite() {
+  void toggleFavourite() async {
     final int selectedProductIndex = products.indexWhere((Product product) {
       return product.id == selProductId;
     });
@@ -135,9 +144,34 @@ mixin ProductsModel on ConnectedProducts {
         price: selectedProduct.price,
         image: selectedProduct.image,
         is_favourite: newStatus,
-        userEmail: authenticatedUser.email,
-        userId: authenticatedUser.id);
+        userEmail: selectedProduct.userEmail,
+        userId: selectedProduct.userId);
     products[selectedProductIndex] = updatedProduct;
+    http.Response response;
+    notifyListeners();
+    if (newStatus) {
+      response = await http.put(
+          'https://eaglevision-1554304063719.firebaseio.com/products/${products[selectedProductIndex].id}/wishlistUsers/${authenticatedUser.id}.json?auth=${authenticatedUser.token}',
+          body: json.encode(true));
+    } else {
+      response = await http.delete(
+        'https://eaglevision-1554304063719.firebaseio.com/products/${products[selectedProductIndex].id}/wishlistUsers/${authenticatedUser.id}.json?auth=${authenticatedUser.token}',
+      );
+    }
+
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: selectedProduct.title,
+          description: selectedProduct.description,
+          price: selectedProduct.price,
+          image: selectedProduct.image,
+          is_favourite: !newStatus,
+          userEmail: authenticatedUser.email,
+          userId: authenticatedUser.id);
+      products[selectedProductIndex] = updatedProduct;
+    }
+
     selProductId = null;
     notifyListeners();
   }

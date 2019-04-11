@@ -131,7 +131,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 title: _formData['title'],
                 description: _formData['description'],
                 image: _formData['image'],
-                price: _formData['price'])
+                price: _formData['price'],
+                location: _formData['location'])
             .then((_) => Navigator.pushReplacementNamed(context, '/products'));
   }
 

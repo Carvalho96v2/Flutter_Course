@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:map_view/map_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:location/location.dart' as geoloc;
 
 import '../../models/location_data.dart';
 import '../../models/product.dart';
@@ -27,7 +29,7 @@ class _LocationInputState extends State<LocationInput> {
   void initState() {
     _addressInputFocusNode.addListener(_updateLocation);
     if (widget.product != null) {
-      getStaticMap(widget.product.location.address);
+      _getStaticMap(widget.product.location.address, geocode: false);
     }
     super.initState();
   }
@@ -40,11 +42,11 @@ class _LocationInputState extends State<LocationInput> {
 
   void _updateLocation() {
     if (!_addressInputFocusNode.hasFocus) {
-      getStaticMap(_addressInputController.text);
+      _getStaticMap(_addressInputController.text, geocode: false);
     }
   }
 
-  void getStaticMap(String address) async {
+  void _getStaticMap(String address, {bool geocode = true, double lat, double long}) async {
     if (address.isEmpty) {
       setState(() {
         _staticMapUri = null;
@@ -69,8 +71,10 @@ class _LocationInputState extends State<LocationInput> {
           latitude: coords['lat'],
           longitude: coords['lng'],
           address: formattedAddress);
-    } else {
+    } else if(lat == null && long == null) {
       _locationData = widget.product.location;
+    } else {
+      _locationData = LocationData(address: address, latitude: lat, longitude: long);
     }
 
     final StaticMapProvider staticMapProvider =
@@ -90,6 +94,27 @@ class _LocationInputState extends State<LocationInput> {
     });
   }
 
+  Future<String> _getAddress(double lat, double long) async {
+    final Uri uri = Uri.https('maps.googleapis.com', '/maps/api/geocode/json',
+        {'latlng': '${lat.toString()},${long.toString()}', 'key': 'AIzaSyDR8xsggmoJX5rfNfGrgFVoxs_qUYKMChU'});
+    final http.Response response = await http.get(uri);
+    final decodedResponse = json.decode(response.body);
+    final formattedAddress = decodedResponse['results'][0]['formatted_address'];
+    return formattedAddress;
+  }
+
+  void _getUserLocation() async {
+    print('in here');
+    final geoloc.Location location = geoloc.Location();
+    print(location);
+    final currentLocation = await location.getLocation();
+    print(currentLocation);
+    final String currentAddress = await _getAddress(currentLocation.latitude, currentLocation.longitude);
+    print(currentAddress);
+    _getStaticMap(currentAddress, geocode:false, lat: currentLocation.latitude, long: currentLocation.longitude);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -103,6 +128,13 @@ class _LocationInputState extends State<LocationInput> {
               return 'No valid location found';
             }
           },
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        FlatButton(
+          child: Text('Locate User'),
+          onPressed: _getUserLocation,
         ),
         SizedBox(
           height: 10.0,

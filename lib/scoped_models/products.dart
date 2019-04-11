@@ -63,7 +63,7 @@ mixin ProductsModel on ConnectedProducts {
   }
 
   Future<Null> updateProduct(
-      {String title, String description, String image, double price}) {
+      {String title, String description, String image, double price, LocationData location}) {
     isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
@@ -72,6 +72,9 @@ mixin ProductsModel on ConnectedProducts {
       'image':
           'https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/07/07/14/melting-choc-istock.jpg?w968h681',
       'price': price,
+      'address': location.address,
+      'longitude': location.longitude,
+      'latitude': location.latitude,
       'userEmail': authenticatedUser.email,
       'userId': authenticatedUser.id
     };
@@ -89,6 +92,7 @@ mixin ProductsModel on ConnectedProducts {
           description: description,
           image: image,
           price: price,
+          location: location,
           userEmail: authenticatedUser.email,
           userId: authenticatedUser.id);
       selProductId = null;
